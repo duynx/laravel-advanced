@@ -114,3 +114,44 @@ public function store(\App\Http\Requests\StoreTeam $request)
 }
 ```
  
+ ### 2.2 Validation testing
+ 
+ Using Dusk - Browser based test
+ 
+`composer require --dev laravel/dusk`
+
+`php artisan dusk:install`
+
+`php artisan dusk:make TeamCreatetest`
+
+File: tests/Browser/TeamCreateTest.php
+```php
+public function testCreatePass()
+{
+    $this->browse(function (Browser $browser) {
+        $browser->visit('/teams/create')
+            ->type('title', 'SampleTeam')
+            ->press('Create')
+            ->assertPathIs('/teams');
+    });
+}
+
+public function testCreateFail()
+{
+    $this->browse(function (Browser $browser) {
+        $browser->visit('/teams/create')
+            ->type('title', '')
+            ->press('Create')
+            ->assertPathIs('/teams/create');
+    });
+}
+```
+
+Run test
+
+`php artisan dusk`
+
+### 2.3 Request authorization
+
+
+
