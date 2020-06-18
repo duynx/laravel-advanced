@@ -25,7 +25,7 @@ class TeamController extends Controller
      */
     public function create()
     {
-        //
+        return view('team/create');
     }
 
     /**
@@ -34,9 +34,12 @@ class TeamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StoreTeam $request)
     {
-        //
+        $team = new Team();
+        $team->title = $request->input('title');
+        $team->save();
+        return redirect('/teams');
     }
 
     /**
