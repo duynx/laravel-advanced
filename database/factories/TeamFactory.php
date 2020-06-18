@@ -13,17 +13,8 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(App\User::class, function (Faker $faker) {
+$factory->define(App\Team::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
-        'remember_token' => str_random(10),
-        'team_id' => function (array $post) {
-            return DB::table('teams')
-                ->inRandomOrder()
-                ->first()
-                ->id;
-        },
+        'title' => $faker->unique()->company,
     ];
 });
