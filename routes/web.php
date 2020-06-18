@@ -17,7 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::namespace('Web')->group(function (){
+//Route::namespace('Web')->group(function (){
+Route::group(['namespace' => 'Web', 'prefix' => 'testing'],function (){
     Route::resource('teams','TeamController');
 
     Route::get('/teams/{team}/title',function (\App\Team $team){
