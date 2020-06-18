@@ -207,4 +207,25 @@ Access to test: http://laravel.advanced/teams/1/edit
 
 ### 2.5 Beyond a resource controller
 
+Controller: app/Http/Controllers/Web/TeamController.php
+```php
+public function points(Team $team)
+{
+    $sum = $team->where('teams.id', $team->id)
+        ->join('tickets', 'teams.id', '=', 'tickets.team_id')
+        ->join('points', 'tickets.id', '=', 'points.ticket_id')
+        ->sum('points.value');
+    return response()->json($sum);
+}
+```
+
+Route
+
+```php
+Route::get('/teams/{team}/points', 'TeamController@points');
+```
+
+Url: http://laravel.advanced/teams/4/points
+
+
 

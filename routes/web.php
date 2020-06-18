@@ -27,6 +27,8 @@ Route::group(['namespace' => 'Web'],function (){
     Route::get('/teams/{team}/activate', function (){
         return view('team/activate');
     })->name('activateTeam')->middleware('signed');
+
+    Route::get('/teams/{team}/points', 'TeamController@points');
 });
 
 Route::get('/square/{number?}',function ($number = 10){
