@@ -153,5 +153,32 @@ Run test
 
 ### 2.3 Request authorization
 
+Authentication Quickstart
+
+`composer require laravel/ui`
+
+`php artisan ui vue --auth`
+
+`npm install && npm run dev`
+
+Go to: http://laravel.advanced/register
+
+nguyenduy1324@gmail.com/12345678
+
+In: app/Http/Requests/StoreTeam.php
+```php
+public function authorize()
+{
+    return ($this->user()->team_id == null);
+    //return ($this->user()->team_id !== null);
+}
+```
+
+Create a team to test: http://laravel.advanced/teams/create
 
 
+ So this is the path forward in the future when we need to ensure that a page can only be access by a certain set of users, you can customize the request object the controller action uses.
+ 
+ ### 2.4 Exception rendering
+ 
+ 
