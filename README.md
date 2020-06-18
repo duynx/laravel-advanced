@@ -65,4 +65,21 @@ http://laravel.advanced/teams/1/title --> return title of the Team in JSON.
 
 #### 1.4 Route groups
 
+```php
+//Route::namespace('Web')->group(function (){
+Route::group(['namespace' => 'Web', 'prefix' => 'testing'],function (){
+    Route::resource('teams','TeamController');
 
+    Route::get('/teams/{team}/title',function (\App\Team $team){
+        return response()->jTitle($team);
+    });
+});
+```
+Url become: http://laravel.advanced/testing/teams/1/title
+
+### 1.5 Named routes
+```php
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+```
