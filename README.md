@@ -92,3 +92,11 @@ Route::get('/teams/{team}/activate', function (){
 // View
 echo URL::temporarySignedRoute('activateTeam', now()->addMinute(1),['team' => 1]);
 ```
+### 1.7 Default route values
+```php
+Route::get('/square/{number?}',function ($number = 10){
+    return $number * $number;
+});
+// http://laravel.advanced/square/5
+```
+

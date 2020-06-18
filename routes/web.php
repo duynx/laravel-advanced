@@ -29,3 +29,6 @@ Route::group(['namespace' => 'Web'],function (){
     })->name('activateTeam')->middleware('signed');
 });
 
+Route::get('/square/{number?}',function ($number = 10){
+    return $number * $number;
+});
