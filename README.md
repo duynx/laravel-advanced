@@ -21,15 +21,15 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel Advenced in this Project
+### Learning Laravel Advenced in this Project
 
-### 1. Routing
+## 1. Routing
 
 Create project
 
 `composer create-project --prefer-dist laravel/laravel laravel-advanced`
 
-#### 1.1 Migration, Seed, Make Model Controller
+### 1.1 Migration, Seed, Make Model Controller
 
 Make model
 
@@ -47,13 +47,13 @@ Get the old helpers
 
 `composer require laravel/helpers`
 
-#### 1.2 Custom namespaces
+### 1.2 Custom namespaces
 
 Make Controller
 
 `php artisan make:controller Web/TeamController --resource --model=Team`
 
-#### 1.3 Route macros
+### 1.3 Route macros
 
 Build Service Provider for the Response Macro
 
@@ -63,7 +63,7 @@ http://laravel.advanced/teams/1/title --> return title of the Team in JSON.
 
 => Can be use in the "API project"
 
-#### 1.4 Route groups
+### 1.4 Route groups
 
 ```php
 //Route::namespace('Web')->group(function (){
@@ -82,4 +82,13 @@ Url become: http://laravel.advanced/testing/teams/1/title
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+```
+### 1.6 Signed routes
+```php
+Route::get('/teams/{team}/activate', function (){
+        return view('team/activate');
+    })->name('activateTeam')->middleware('signed');
+
+// View
+echo URL::temporarySignedRoute('activateTeam', now()->addMinute(1),['team' => 1]);
 ```
