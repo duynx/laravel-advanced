@@ -227,5 +227,41 @@ Route::get('/teams/{team}/points', 'TeamController@points');
 
 Url: http://laravel.advanced/teams/4/points
 
+### 2.6 Service injection
 
+Create file: app/Teams/Repository.php
+```php
+namespace App\Teams;
+
+class Repository
+{
+    public function points($team)
+    {
+        return $team->where('teams.id', $team->id)
+            ->join('tickets', 'teams.id', '=', 'tickets.team_id')
+            ->join('points', 'tickets.id', '=', 'points.ticket_id')
+            ->sum('points.value');
+    }
+}
+```
+
+Edit controller: app/Http/Controllers/Web/TeamController.php
+```php
+// Add 
+public function __construct(\App\Teams\Repository $teams)
+{
+    $this->teams = $teams;
+}
+
+// Edit
+public function points(Team $team)
+{
+    return response()->json($this->teams->points($team));
+}
+```
+Url: http://laravel.advanced/teams/4/points -> the same result as 2.5
+
+Notice we're able to both isolate logic in a different class that we can reuse across our application as well as inject the version we want. This now makes our instance of the team repository class replaceable at runtime, making this much easier for us to do any unit testing in this class. Since we can set the constructor argument and replace the repository with the mock if we need to.
+
+## 3. Authentication and Authorization
 
