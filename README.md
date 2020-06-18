@@ -181,4 +181,30 @@ Create a team to test: http://laravel.advanced/teams/create
  
  ### 2.4 Exception rendering
  
+ Make Exception
  
+ `php artisan make:exception ActionNotCompletedException`
+ 
+ File: app/Exceptions/ActionNotCompletedException.php
+ 
+ ```php
+class ActionNotCompletedException extends Exception
+{
+    public function render($request)
+    {
+        return response()->view('no_method', [], 501);
+    }
+}
+```
+In: app/Http/Controllers/Web/TeamController.php
+```php
+public function edit(Team $team)
+{
+    throw new \App\Exceptions\ActionNotCompletedException();
+}
+```
+Access to test: http://laravel.advanced/teams/1/edit
+
+### 2.5 Beyond a resource controller
+
+

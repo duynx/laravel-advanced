@@ -61,7 +61,7 @@ class TeamController extends Controller
      */
     public function edit(Team $team)
     {
-        //
+        throw new \App\Exceptions\ActionNotCompletedException();
     }
 
     /**
