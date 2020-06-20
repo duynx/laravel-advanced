@@ -94,7 +94,7 @@ Make request
 
 `php artisan make:request StoreTeam`
 
-app/Http/Requests/StoreTeam.php
+> app/Http/Requests/StoreTeam.php
 ```php
 public function rules()
 {
@@ -103,7 +103,7 @@ public function rules()
     ];
 }
 ``` 
-app/Http/Controllers/Web/TeamController.php
+> app/Http/Controllers/Web/TeamController.php
 ```php
 public function store(\App\Http\Requests\StoreTeam $request)
 {
@@ -124,7 +124,7 @@ public function store(\App\Http\Requests\StoreTeam $request)
 
 `php artisan dusk:make TeamCreatetest`
 
-File: tests/Browser/TeamCreateTest.php
+> tests/Browser/TeamCreateTest.php
 ```php
 public function testCreatePass()
 {
@@ -165,7 +165,7 @@ Go to: http://laravel.advanced/register
 
 nguyenduy1324@gmail.com/12345678
 
-In: app/Http/Requests/StoreTeam.php
+> app/Http/Requests/StoreTeam.php
 ```php
 public function authorize()
 {
@@ -185,7 +185,7 @@ Create a team to test: http://laravel.advanced/teams/create
  
  `php artisan make:exception ActionNotCompletedException`
  
- File: app/Exceptions/ActionNotCompletedException.php
+ > app/Exceptions/ActionNotCompletedException.php
  
  ```php
 class ActionNotCompletedException extends Exception
@@ -196,7 +196,7 @@ class ActionNotCompletedException extends Exception
     }
 }
 ```
-In: app/Http/Controllers/Web/TeamController.php
+> app/Http/Controllers/Web/TeamController.php
 ```php
 public function edit(Team $team)
 {
@@ -207,7 +207,7 @@ Access to test: http://laravel.advanced/teams/1/edit
 
 ### 2.5 Beyond a resource controller
 
-Controller: app/Http/Controllers/Web/TeamController.php
+> app/Http/Controllers/Web/TeamController.php
 ```php
 public function points(Team $team)
 {
@@ -229,7 +229,7 @@ Url: http://laravel.advanced/teams/4/points
 
 ### 2.6 Service injection
 
-Create file: app/Teams/Repository.php
+> app/Teams/Repository.php
 ```php
 namespace App\Teams;
 
@@ -245,7 +245,7 @@ class Repository
 }
 ```
 
-Edit controller: app/Http/Controllers/Web/TeamController.php
+> app/Http/Controllers/Web/TeamController.php
 ```php
 // Add 
 public function __construct(\App\Teams\Repository $teams)
@@ -267,7 +267,7 @@ Notice we're able to both isolate logic in a different class that we can reuse a
 
 ### 3.1 Custom user guards
 
-app/Providers/AuthServiceProvider.php
+> app/Providers/AuthServiceProvider.php
 ```php
 public function boot()
 {
@@ -279,7 +279,7 @@ public function boot()
 }
 ```
 
-config/auth.php
+> config/auth.php
 ```php
 'guards' => [
     'web' => [
@@ -300,7 +300,7 @@ config/auth.php
 ]
 ```
 
-routes/web.php
+> routes/web.php
 ```php
 Route::get('/square/{number?}',function ($number = 10){
     return $number * $number;
@@ -315,7 +315,7 @@ User gating is the mechanism in Laravel to determine if a user can perform a par
 
 `php artisan make:policy TeamPolicy --model=Team`
 
-app/Policies/TeamPolicy.php
+> app/Policies/TeamPolicy.php
 ```php
 public function view(User $user, Team $team)
 {
@@ -327,14 +327,14 @@ public function create(User $user)
     return true;
 }
 ```
-app/Providers/AuthServiceProvider.php
+> app/Providers/AuthServiceProvider.php
 ```php
 protected $policies = [
     // 'App\Model' => 'App\Policies\ModelPolicy',
     'App\Team' => 'App\Policies\TeamPolicy',
 ];
 ```
-app/Http/Controllers/Web/TeamController.php
+> app/Http/Controllers/Web/TeamController.php
 ```php
 public function __construct(\App\Teams\Repository $teams)
 {
@@ -360,7 +360,7 @@ Before-user gating is the ability to basically add a callback to our user gate a
 
 `php artisan make:policy SitePolicy`
 
-app/Policies/SitePolicy.php
+> app/Policies/SitePolicy.php
 ```php
 /**
  * @param $user
@@ -378,7 +378,7 @@ public function before($user, $ability)
     }
 }
 ```
-app/Policies/TeamPolicy.php
+> app/Policies/TeamPolicy.php
 ```php
 class TeamPolicy extends SitePolicy
 ```
@@ -390,12 +390,12 @@ we're now able to view our page. So that's the ability to write a before policy 
 
 What about permitting a guest user to access a route? A good example of this might be your sign-up page. You might normally want a user to be authenticated to access a page, but in some cases, you want certain users or unauthenticated users to be able to access a page
 
-app/Policies/TeamPolicy.php
+> app/Policies/TeamPolicy.php
 ```php
 public function create(?User $user)
-    {
-        return is_null($user);
-    }
+{
+    return is_null($user);
+}
 ```
 The optional type hint is a new feature of PHP 7.1, which says we either require a type of whatever you hinted, in this case, a user model, or null. What we'll do is, on line 31 in our create method, we'll add in a question mark right before the user type hint parameter
 
