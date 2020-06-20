@@ -314,3 +314,45 @@ http://laravel.advanced/square/5?email=nguyenduy1324@gmail.com
 User gating is the mechanism in Laravel to determine if a user can perform a particular action. Let's say that we want to update our logic to teams to permit only a member of team to perform actions on that same team. We can define gates in a variety of ways
 
 `php artisan make:policy TeamPolicy --model=Team`
+
+app/Policies/TeamPolicy.php
+```php
+public function view(User $user, Team $team)
+{
+    return ($user->team_id === $team->id);
+}
+
+public function create(User $user)
+{
+    return true;
+}
+```
+app/Providers/AuthServiceProvider.php
+```php
+protected $policies = [
+    // 'App\Model' => 'App\Policies\ModelPolicy',
+    'App\Team' => 'App\Policies\TeamPolicy',
+];
+```
+app/Http/Controllers/Web/TeamController.php
+```php
+public function __construct(\App\Teams\Repository $teams)
+{
+    $this->teams = $teams;
+    $this->authorizeResource(Team::class, 'team');
+}
+
+public function points(Team $team)
+{
+    $this->authorize('view', $team);
+    return response()->json($this->teams->points($team));
+}
+```
+http://laravel.advanced/teams/create
+
+-> http://laravel.advanced/teams/1: 
+
+we'll see that we get a 403 error. That's because our user account isn't associated with the team of ID of 1
+
+### 3.3 Before user gating
+
