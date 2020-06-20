@@ -356,3 +356,33 @@ we'll see that we get a 403 error. That's because our user account isn't associa
 
 ### 3.3 Before user gating
 
+Before-user gating is the ability to basically add a callback to our user gate and permit it to be bypassed.
+
+`php artisan make:policy SitePolicy`
+
+app/Policies/SitePolicy.php
+```php
+/**
+ * @param $user
+ * @param $ability
+ * @return bool
+ * The ability is the action the user is attempting to reach.
+ * This before method is going to return true in the case of when we want the user to access the ability,
+ * false to deny access and null to let it fall through to the corresponding ability method in our other policies
+ * In this case, true for user as a super user
+ */
+public function before($user, $ability)
+{
+    if (is_null($user->team_id)) {
+        return true;
+    }
+}
+```
+app/Policies/TeamPolicy.php
+```php
+class TeamPolicy extends SitePolicy
+```
+http://laravel.advanced/teams/1
+
+we're now able to view our page. So that's the ability to write a before policy method and provide the ability to basically generate super user privileges.
+
