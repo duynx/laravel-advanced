@@ -39,9 +39,9 @@ class TeamPolicy extends SitePolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(?User $user)
     {
-        return true;
+        return is_null($user);
     }
 
     /**

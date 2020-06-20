@@ -386,3 +386,19 @@ http://laravel.advanced/teams/1
 
 we're now able to view our page. So that's the ability to write a before policy method and provide the ability to basically generate super user privileges.
 
+### 3.4 Null user gating
+
+What about permitting a guest user to access a route? A good example of this might be your sign-up page. You might normally want a user to be authenticated to access a page, but in some cases, you want certain users or unauthenticated users to be able to access a page
+
+app/Policies/TeamPolicy.php
+```php
+public function create(?User $user)
+    {
+        return is_null($user);
+    }
+```
+The optional type hint is a new feature of PHP 7.1, which says we either require a type of whatever you hinted, in this case, a user model, or null. What we'll do is, on line 31 in our create method, we'll add in a question mark right before the user type hint parameter
+
+-> We can access http://laravel.advanced/teams/create with guest user.
+
+## 4. Eloquent
