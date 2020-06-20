@@ -46,6 +46,11 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+
+        'email' => [
+            'driver' => 'email',
+            'provider' => 'users',
+        ],
     ],
 
     /*

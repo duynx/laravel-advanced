@@ -265,3 +265,52 @@ Notice we're able to both isolate logic in a different class that we can reuse a
 
 ## 3. Authentication and Authorization
 
+### 3.1 Custom user guards
+
+app/Providers/AuthServiceProvider.php
+```php
+public function boot()
+{
+    $this->registerPolicies();
+    $this->registerPolicies();
+    \Auth::viaRequest('email', function($request){
+        return \App\User::where('email', $request->email)->first();
+    });
+}
+```
+
+config/auth.php
+```php
+'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+
+    'api' => [
+        'driver' => 'token',
+        'provider' => 'users',
+        'hash' => false,
+    ],
+
+    'email' => [
+        'driver' => 'email',
+        'provider' => 'users',
+    ],
+]
+```
+
+routes/web.php
+```php
+Route::get('/square/{number?}',function ($number = 10){
+    return $number * $number;
+})->middleware('auth:email');
+```
+
+http://laravel.advanced/square/5?email=nguyenduy1324@gmail.com
+
+### 3.2 Custom user gating
+
+User gating is the mechanism in Laravel to determine if a user can perform a particular action. Let's say that we want to update our logic to teams to permit only a member of team to perform actions on that same team. We can define gates in a variety of ways
+
+`php artisan make:policy TeamPolicy --model=Team`
