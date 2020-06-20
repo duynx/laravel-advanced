@@ -402,3 +402,36 @@ The optional type hint is a new feature of PHP 7.1, which says we either require
 -> We can access http://laravel.advanced/teams/create with guest user.
 
 ## 4. Eloquent
+
+### 4.1 Global scoping
+The first is Global Scoping, where we can refine a scope for model a set of models such that every query will add some conditional where clause.
+
+In this case, we're going to ignore all tickets that have a value equal to 16.
+> app/Scopes/PointScope.php
+
+```php
+namespace App\Scopes;
+
+use Illumninate\Database\Eloquent\Builder;
+use Illumninate\Database\Eloquent\Model;
+use Illumninate\Database\Eloquent\Scope;
+
+class PointScope implements Scope
+{
+    public function apply(Builder $builder, Model $model)
+    {
+        $builder->where('value', '!=', 16);
+    }
+}
+```
+Using scope in model
+>app/Point.php
+```php
+protected static function boot()
+{
+    parent::boot();
+    static::addGlobalScope(new \App\Scopes\PointScope());
+}
+```
+### 4.2 Eloquent events
+
