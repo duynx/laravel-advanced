@@ -699,3 +699,86 @@ http://laravel.advanced/teams will return True or False.
 
 ### 5.3 Mapping
 
+Mapping and collections is a way for us to apply a function over every element in the collection
+
+#### Swap the items
+
+> app/Http/Controllers/Web/TeamController.php
+
+We'll chunk the teams into collections of two, map over each, and in this case we'll just swap the order of each pair. And then combine the chunk collections back together
+
+```php
+//Edit
+public function index()
+{
+    return Team::all()->chunk(2)->mapSpread(function ($team1, $team2){
+        return [$team2, $team1];
+    })->collapse();
+}
+```
+Result
+```json
+[
+  {
+    "id": 2,
+    "title": "Gulgowski PLC",
+    "created_at": "2020-06-18T17:55:11.000000Z",
+    "updated_at": "2020-06-18T17:55:11.000000Z",
+    "users_count": "3"
+  },
+  {
+    "id": 1,
+    "title": "Christiansen-Boyer",
+    "created_at": "2020-06-18T17:55:11.000000Z",
+    "updated_at": "2020-06-18T17:55:11.000000Z",
+    "users_count": "24"
+  },
+  {
+    "id": 4,
+    "title": "Runolfsson PLC",
+    "created_at": "2020-06-18T17:55:11.000000Z",
+    "updated_at": "2020-06-18T17:55:11.000000Z",
+    "users_count": "38"
+  },
+  {
+    "id": 3,
+    "title": "Kassulke, Nicolas and Durgan",
+    "created_at": "2020-06-18T17:55:11.000000Z",
+    "updated_at": "2020-06-18T17:55:11.000000Z",
+    "users_count": "13"
+  }
+]
+```
+#### Map to Groups
+
+That lets us return an array with a single key and value pair. And then Laravel will join the key pairs together for the overall collection
+
+```php
+//Edit
+public function index()
+{
+    return Team::all()->mapToGroups(function($team){
+        return [$team->users_count => $team->id];
+    });
+}
+```
+Group the team id by the users_count
+
+http://laravel.advanced/teams
+
+```json
+{
+  "0": [
+    11,
+    12,
+    13
+  ],
+  "3": [
+    2
+  ],
+  "7": [
+    7
+  ]
+}
+```
+### 5.4 Reducing
