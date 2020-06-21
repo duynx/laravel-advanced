@@ -453,4 +453,32 @@ And then register a new user -> the user will have the team_id
 
 ### 4.3 Eloquent observers
 
+If we want some way of writing our event logic so it's not so deeply tied into the boot function? Laravel provides a class called observers that for Eloquent models lets us do just that
+
+`php artisan make:observer UserObserver --model=User`
+
+>app/Observers/UserObserver.php
+
+```php
+// add
+public function creating(User $user)
+{
+    $user->team_id = \DB::table('teams')->inRandomOrder()->first->id;
+}
+```
+Tie observer into the model
+
+>app/User.php
+
+```php
+protected static function boot(){
+    parent::boot();
+    //static::creating(function($model){
+        //$model->team_id = \DB::table('teams')->inRandomOrder()->first()->id;
+    //});
+    User::observe('App\Observers\UserObserver');
+}
+```
+-> The same happen with the 4.2
+
 
