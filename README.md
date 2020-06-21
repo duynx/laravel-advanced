@@ -1072,3 +1072,40 @@ public function create()
     return view('team/create')->with('points', 5);
 }
 ```
+
+## 7. Middleware
+
+Middleware is logic that you can write to access a request or response and make decisions on that basis.
+
+### 7.1 Global middleware
+
+Global Middlewear is middleware that we can apply across the entire state of the application. One of the fun aspects of Global Middleware, is depending on the load order. It may apply before we normal data that we might otherwise depend on. For instance, it may run before the off layer has loaded in the user.
+
+Create the Middleware to logging the request
+
+`php artisan make:middleware Logging`
+
+> app/Http/Middleware/Logging.php
+```php
+public function handle($request, Closure $next)
+{
+    \Log::info(
+        $request->fullUrl(),
+        [
+            'method' => $request->method(),
+            'input' => $request->all(),
+        ]
+    );
+    return $next($request);
+}
+``` 
+Add middleware to 
+> app/Http/Kernel.php
+
+```php
+protected $middleware = [
+    \App\Http\Middleware\Logging::class,
+];
+``` 
+
+### 7.2 Route middleware
