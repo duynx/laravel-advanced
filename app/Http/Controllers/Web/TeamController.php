@@ -20,8 +20,8 @@ class TeamController extends Controller
      */
     public function index()
     {
-        return Team::all()->map(function($team, $key){
-            return $team->title;
+        return Team::all()->filter(function ($team){
+            return $team->users_count > 2;
         });
     }
 

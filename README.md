@@ -657,6 +657,45 @@ http://laravel.advanced/teams
 
 Those are some common and basic ways that we can iterate through our collections.
 
+### 5.2 Filtering
+> app/Http/Controllers/Web/TeamController.php
+```php
+public function index()
+{
+    return Team::all()->firstWhere('users_count','>', 2);
+}
+```
+#### Filter
+```php
+public function index()
+{
+    return Team::all()->filter(function ($team){
+        return $team->users_count > 2;
+    });
+}
+```
+#### Reject -  Revert of filter above
+```php
+public function index()
+{
+    return Team::all()->reject(function ($team){
+        return $team->users_count > 2;
+    });
+}
+```
+#### Search
 
+Search lets us search the collection for an element that matches the callback. It returns the first element in our collection that matches the callback's boolean return value
 
+```php
+public function index()
+{
+    return Team::all()->search(function($team){
+        return $team->users_count > 2;
+    });
+}
+```
+http://laravel.advanced/teams will return True or False.
+
+### 5.3 Mapping
 
