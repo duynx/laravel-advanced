@@ -833,3 +833,64 @@ public function index()
 
 ### 5.5 Transforming
 
+Transforming collections is the ability for us to take a collection and transform it into a new, and different collection. Some of these operations are as simple as reordering the elements of the collection, or adding and removing elements. However, we can also take a number of the elements and transform the collection itself
+
+> app/Http/Controllers/Web/TeamController.php
+```php
+public function index()
+{
+    return Team::all()->shuffle();
+}
+// Shuffle the element of collection
+```
+#### Order by a specific value
+```php
+public function index()
+{
+    return Team::all()->sortBy('users_count');
+}
+```
+
+#### Take
+
+Takes our collection, and removes two of the elements from the collection - return 2 items
+```php
+public function index()
+{
+    return Team::all()->take(2);
+}
+```
+#### Pluck
+
+Extract values from our collection
+```php
+public function index()
+{
+    return Team::all()->pluck('title');
+}
+```
+```json
+[
+  "Christiansen-Boyer",
+  "Gulgowski PLC",
+  "Kassulke, Nicolas and Durgan",
+  "Runolfsson PLC",
+  "Waters Inc",
+  "Runolfsson Group"
+]
+```
+#### Transform
+
+```php
+public function index()
+{
+    return Team::all()->transform(function ($team){
+        $team->title = strtoupper($team->title);
+        return $team;
+    });
+}
+```
+
+### 5.6 Diffing
+
+

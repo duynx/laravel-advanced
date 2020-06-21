@@ -20,7 +20,10 @@ class TeamController extends Controller
      */
     public function index()
     {
-        return Team::all()->sum('users_count');
+        return Team::all()->transform(function ($team){
+            $team->title = strtoupper($team->title);
+            return $team;
+        });
     }
 
     /**
