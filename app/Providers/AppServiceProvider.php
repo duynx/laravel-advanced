@@ -28,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
         \Blade::directive('inputTextBox',function($field){
             return "<?php echo \App\InputBox::text($field); ?>";
         });
+        \View::composer('*', 'App\TeamPointsComposer');
     }
 }

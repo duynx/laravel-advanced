@@ -984,3 +984,57 @@ If didn't work, you may need to clear the cache by
 ### 6.2 View composers
 
 A view composer allows us to bind data at run time using either a callback function or class
+
+We'll try this out with writing a composer (mumbles) the points total for a team to our view
+ 
+> app/Providers/AppServiceProvider.php
+
+```php
+/*
+* Our composer function takes two parameters. 
+* The first is the views in which this is being enabled on. 
+* In this case, we're going to enable it on all views. So we pass in the string star. 
+* Next we pass in the class that we're going to be loading in
+*/
+public function boot()
+{
+    \Blade::directive('inputTextBox',function($field){
+        return "<?php echo \App\InputBox::text($field); ?>";
+    });
+    \View::composer('*', 'App\TeamPointsComposer');
+}
+```
+
+> app/TeamPointsComposer.php
+```php
+namespace App;
+
+class TeamPointsComposer
+{
+    public function __construct(\App\Teams\Repository $teams)
+    {
+        $this->teams = $teams;
+    }
+
+    public function compose(\Illuminate\View\View $view)
+    {
+        $view->with('points', $this->teams->points(\App\Team::first()));
+    }
+}
+
+```
+> resources/views/team/create.blade.php
+
+```blade
+@extends('template')
+
+@section('content')
+    <form action="{{ action('Web\TeamController@store') }}" method="POST">
+        @csrf
+        @inputTextBox('title')
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+    <p>Team {{ $points }}</p>
+@endsection
+
+```
