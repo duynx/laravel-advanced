@@ -511,3 +511,31 @@ Go to http://laravel.advanced/teams we'll see the user_count in the data
 ```
 ### 4.5 Custom mutators
 
+ We can also define mutators when we want to override the way in which we want a value to be saved to our database. Imagine you need to ensure that a field is always uppercase or that it's formatted in some particular way before it's inserted into the database. 
+ 
+ We'll do this now with our team titles to ensure that the title of the team is always uppercase
+
+> app/Team.php
+
+```php
+//add
+public function setTitleAttribute($value)
+{
+    $this->attributes['title'] = ucwords($value);
+}
+```
+
+> app/Http/Requests/StoreTeam.php
+
+```php
+//edit
+public function authorize()
+{
+    //return ($this->user()->team_id == null);
+    return true;
+}
+```
+http://laravel.advanced/teams/create to test -> all the first character of the title will be uppercase
+
+### 4.6 Advanced wheres
+

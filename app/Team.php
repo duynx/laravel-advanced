@@ -12,4 +12,9 @@ class Team extends Model
     }
 
     public $appends = ['users_count'];
+
+    public function setTitleAttribute($value)
+    {
+        $this->attributes['title'] = ucwords($value);
+    }
 }
