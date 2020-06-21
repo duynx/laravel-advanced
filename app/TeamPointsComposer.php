@@ -8,7 +8,7 @@ class TeamPointsComposer
         $this->teams = $teams;
     }
 
-    public function compose(\Illuminate\View\View $view)
+    public function create(\Illuminate\View\View $view)
     {
         $view->with('points', $this->teams->points(\App\Team::first()));
     }

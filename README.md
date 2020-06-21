@@ -1038,3 +1038,37 @@ class TeamPointsComposer
 @endsection
 
 ```
+
+### 6.3 View creators
+
+View creators are virtually identical to view composers. They differ in one key respect. A composer runs when the view is about to be rendered, meaning the controller can't override the variable. Versus a creator, you can have the controller override a variable set by that creator.
+
+> app/Providers/AppServiceProvider.php
+
+```php
+public function boot()
+{
+    //Schema::defaultStringLength(191);
+    \Blade::directive('inputTextBox',function($field){
+        return "<?php echo \App\InputBox::text($field); ?>";
+    });
+    //\View::composer('*', 'App\TeamPointsComposer');
+    \View::creator('team/create', 'App\TeamPointsComposer');
+}
+```
+> app/TeamPointsComposer.php
+
+```php
+// Change composer -> create
+public function create(\Illuminate\View\View $view)
+{
+    $view->with('points', $this->teams->points(\App\Team::first()));
+}
+```
+> app/Http/Controllers/Web/TeamController.php
+```php
+public function create()
+{
+    return view('team/create')->with('points', 5);
+}
+```
