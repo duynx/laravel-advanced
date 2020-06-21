@@ -20,7 +20,9 @@ class TeamController extends Controller
      */
     public function index()
     {
-        return Team::paginate();
+        return Team::all()->map(function($team, $key){
+            return $team->title;
+        });
     }
 
     /**

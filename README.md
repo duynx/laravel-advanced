@@ -563,4 +563,100 @@ Go to http://laravel.advanced/teams/2/points to check the points
 
 ## 5. Collections
 
+Collections in Laravel is the main way that we work with arrays of data. Is is also how eloquent returns data from the database for us to manipulate. We'll explore some of the ways we have to iterate over a collection.
+
+### 5.1 Iteration
+
+> app/Http/Controllers/Web/TeamController.php
+
+```php
+//edit
+public function index()
+{
+    return Team::all()->chunk(2);
+}
+```
+Result in http://laravel.advanced/teams
+
+```json
+// 20200621111555
+// http://laravel.advanced/teams
+
+[
+  [
+    {
+      "id": 1,
+      "title": "Christiansen-Boyer",
+      "created_at": "2020-06-18T17:55:11.000000Z",
+      "updated_at": "2020-06-18T17:55:11.000000Z",
+      "users_count": "24"
+    },
+    {
+      "id": 2,
+      "title": "Gulgowski PLC",
+      "created_at": "2020-06-18T17:55:11.000000Z",
+      "updated_at": "2020-06-18T17:55:11.000000Z",
+      "users_count": "3"
+    }
+  ],
+  {
+    "2": {
+      "id": 3,
+      "title": "Kassulke, Nicolas and Durgan",
+      "created_at": "2020-06-18T17:55:11.000000Z",
+      "updated_at": "2020-06-18T17:55:11.000000Z",
+      "users_count": "13"
+    },
+    "3": {
+      "id": 4,
+      "title": "Runolfsson PLC",
+      "created_at": "2020-06-18T17:55:11.000000Z",
+      "updated_at": "2020-06-18T17:55:11.000000Z",
+      "users_count": "38"
+    }
+  }
+]
+```
+
+We're going to chunk this. And this chunk takes a parameter of two. This parameter says to chunk our collection into a set of groups, that groups being a size of two and then return it as an array
+
+#### Each
+
+You've probably seen each before, where each element is passed to a callback, but each spread takes the collection and passes each element of the collections. Each of those elements gets passed to a callback
+
+We'll finish this off by exploring the most common way of looping through a collection using maps.
+
+> app/Http/Controllers/Web/TeamController.php
+
+```php
+//edit
+public function index()
+{
+    return Team::all()->map(function($team, $key){
+        return $team->title;
+    });
+}
+```
+http://laravel.advanced/teams
+
+```json
+[
+  "Christiansen-Boyer",
+  "Gulgowski PLC",
+  "Kassulke, Nicolas and Durgan",
+  "Runolfsson PLC",
+  "Waters Inc",
+  "Runolfsson Group",
+  "Metz-Weissnat",
+  "Dickinson Group",
+  "Sipes-Reynolds",
+  "Sauer, Runolfsson and Schumm",
+  "Andy Team"
+]
+```
+
+Those are some common and basic ways that we can iterate through our collections.
+
+
+
 
