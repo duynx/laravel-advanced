@@ -433,5 +433,24 @@ protected static function boot()
     static::addGlobalScope(new \App\Scopes\PointScope());
 }
 ```
-### 4.2 Eloquent events
+### 4.2 Eloquent events (Hook to events)
+
+Eloquent includes an inventing layer that we can hook into to have logic run when something happens for each model instance.
+ 
+Let's add some logic so that when we create a new user, it randomly assigns that user to a team
+
+> app/User.php
+```php
+// Add
+protected static function boot(){
+    parent::boot();
+    static::creating(function($model){
+        $model->team_id = \DB::table('teams')->inRandomOrder()->first()->id;
+    });
+}
+```
+And then register a new user -> the user will have the team_id
+
+### 4.3 Eloquent observers
+
 
