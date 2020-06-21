@@ -753,6 +753,8 @@ Result
 
 That lets us return an array with a single key and value pair. And then Laravel will join the key pairs together for the overall collection
 
+> app/Http/Controllers/Web/TeamController.php
+
 ```php
 //Edit
 public function index()
@@ -782,3 +784,52 @@ http://laravel.advanced/teams
 }
 ```
 ### 5.4 Reducing
+
+Reducing is the other half of a map reduce operation, which you may have heard of at one point or another. Map reduce is where we iterate through the collection we map. We apply an operation, each element of the collection and then reduce the collection into a single value
+
+> app/Http/Controllers/Web/TeamController.php
+
+Reduce takes two parameters. The first is the carry value being passed back, and the second is the item being operated on for that innervation.
+
+```php
+//edit
+public function index()
+{
+    return Team::all()->reduce(function($carry, $team){
+        return $carry + $team->users_count;
+    });
+}
+```
+Return number of user in all of our team `317`
+
+```php
+//edit
+public function index()
+{
+    return Team::all()->reduce(function($carry, $team){
+        return $carry + $team->users_count;
+    }, 10);
+}
+```
+
+Return number of user in all of our team 317 + 10 `327`
+
+What if we wanted to provide a cumulative count of users over each year. And in this case, a reduce operation's just calculating the number of users for this year
+
+```php
+public function index()
+{
+    return Team::all()->sum('users_count');
+}
+// return sum of the users - 317
+```
+```php
+public function index()
+{
+    return Team::all()->avg('users_count');
+}
+// return average of the user each team
+```
+
+### 5.5 Transforming
+

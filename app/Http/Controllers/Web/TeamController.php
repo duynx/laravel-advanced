@@ -20,9 +20,7 @@ class TeamController extends Controller
      */
     public function index()
     {
-        return Team::all()->mapToGroups(function($team){
-            return [$team->users_count => $team->id];
-        });
+        return Team::all()->sum('users_count');
     }
 
     /**
