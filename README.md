@@ -936,4 +936,51 @@ public function index()
 
 ## 6. Blade
 
+### 6.1 Custom Blade directives
 
+Lavarel Blade includes the ability to write a custom Blade directive. A Blade directive gives us the ability to write out own custom extension into Blade for common logic in our application. A common example of this might be to format dates in whatever in-house style your company decides to use
+
+> app/inputBox.php
+```php
+namespace App;
+
+class InputBox
+{
+    public static function text($name)
+    {
+        return "<div class=\"form-group\">
+		<label form=\"{$name}\">{$name}</label>
+		<input type=\"text\" class=\"form-control\" name=\"{$name}\" id=\"{$name}\">
+	</div>";
+    }
+}
+```
+> app/Providers/AppServiceProvider.php
+```php
+public function boot()
+{
+    //Schema::defaultStringLength(191);
+    \Blade::directive('inputTextBox',function($field){
+        return "<?php echo \App\InputBox::text($field); ?>";
+    });
+}
+```
+> resources/views/team/create.blade.php
+```blade
+@extends('template')
+
+@section('content')
+    <form action="{{ action('Web\TeamController@store') }}" method="POST">
+        @csrf
+        @inputTextBox('title')
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+@endsection
+```
+If didn't work, you may need to clear the cache by
+
+`php artisan view:clear`
+
+### 6.2 View composers
+
+A view composer allows us to bind data at run time using either a callback function or class

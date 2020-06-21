@@ -24,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Schema::defaultStringLength(191);
+        //Schema::defaultStringLength(191);
+        \Blade::directive('inputTextBox',function($field){
+            return "<?php echo \App\InputBox::text($field); ?>";
+        });
     }
 }
