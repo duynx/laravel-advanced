@@ -1143,3 +1143,29 @@ All log in the file
 
 ### 7.3 Terminate middleware
 
+Terminable middleware gives us the ability to run middleware that is processed when the response is on its way to the browser after we lost our chance to modify the response or the request.
+
+`php artisan make:middleware LogSize`
+
+> app/Http/Middleware/LogSize.php
+```php
+//add
+// This function will run after the request
+public function terminate($request, $response){
+    \Log::info($request->fullUrl(),[
+       'size' => strlen($response->content())
+    ]);
+}
+```
+
+>app/Http/Kernel.php
+
+```php
+protected $middleware = [
+    \App\Http\Middleware\LogSize::class,
+];
+```
+
+See the log
+
+`[2020-06-21 08:31:59] local.INFO: http://laravel.advanced/teams/1/points {"size":5} `
