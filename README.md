@@ -539,3 +539,28 @@ http://laravel.advanced/teams/create to test -> all the first character of the t
 
 ### 4.6 Advanced wheres
 
+You may have noticed up to this point a thing we do when we get the points values for a team. Is that tickets are associated with an owner, but in this case, our owner never actually has to match the team we're checking against. Let's update our team's repository method to resolve this
+
+> app/Teams/Repository.php
+
+```php
+//edit
+public function points($team)
+{
+    $users = $team->where('teams.id', $team->id)
+        ->join('users', 'teams.id', '=', 'users.team_id')
+        ->select('users.id');
+
+    return $team->where('teams.id', $team->id)
+        ->join('tickets', 'teams.id', '=', 'tickets.team_id')
+        ->join('points', 'tickets.id', '=', 'points.ticket_id')
+        ->whereIn('points.owner_id', $users)
+        ->sum('points.value');
+}
+```
+
+Go to http://laravel.advanced/teams/2/points to check the points
+
+## 5. Collections
+
+
