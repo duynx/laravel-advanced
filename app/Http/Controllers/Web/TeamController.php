@@ -20,10 +20,7 @@ class TeamController extends Controller
      */
     public function index()
     {
-        return Team::all()->transform(function ($team){
-            $team->title = strtoupper($team->title);
-            return $team;
-        });
+        return Team::all()->map->getTable();
     }
 
     /**

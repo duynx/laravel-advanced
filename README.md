@@ -893,4 +893,47 @@ public function index()
 
 ### 5.6 Diffing
 
+Diffing is the ability for us to take two collections and present the differences between those two collections
+
+> app/Http/Controllers/Web/TeamController.php
+```php
+public function index()
+{
+    $collection1 = Team::all();
+    $collection2 = $collection1->nth(2); // subset of collection 1
+    //return $collection1->intersect($collection2); // Get items in both collections
+    //return $collection1->diff($collection2); // What element are in C1, not in C2
+    return $collection2->concat($collection1)->unique('created_at'); // concat 2 Collections in to 1
+}
+```
+
+### 5.7 Higher-order methods
+
+Higher order messages in collections are the ability for us to write some of the most common collection operations in a shorter format, especially when working with objects.
+
+> app/Http/Controllers/Web/TeamController.php
+
+```php
+public function index()
+{
+    return Team::all()->sum->users_count;
+}
+```
+Set all title to `each`
+```php
+public function index()
+{
+    return Team::all()->each->forceFill(['title' => 'each']);
+}
+```
+Get table of the items
+```php
+public function index()
+{
+    return Team::all()->map->getTable();
+}
+```
+
+## 6. Blade
+
 
