@@ -402,3 +402,165 @@ The optional type hint is a new feature of PHP 7.1, which says we either require
 -> We can access http://laravel.advanced/teams/create with guest user.
 
 ## 4. Eloquent
+
+### 4.1 Global scoping
+The first is Global Scoping, where we can refine a scope for model a set of models such that every query will add some conditional where clause.
+
+In this case, we're going to ignore all tickets that have a value equal to 16.
+> app/Scopes/PointScope.php
+
+```php
+namespace App\Scopes;
+
+use Illumninate\Database\Eloquent\Builder;
+use Illumninate\Database\Eloquent\Model;
+use Illumninate\Database\Eloquent\Scope;
+
+class PointScope implements Scope
+{
+    public function apply(Builder $builder, Model $model)
+    {
+        $builder->where('value', '!=', 16);
+    }
+}
+```
+Using scope in model
+>app/Point.php
+```php
+protected static function boot()
+{
+    parent::boot();
+    static::addGlobalScope(new \App\Scopes\PointScope());
+}
+```
+### 4.2 Eloquent events (Hook to events)
+
+Eloquent includes an inventing layer that we can hook into to have logic run when something happens for each model instance.
+ 
+Let's add some logic so that when we create a new user, it randomly assigns that user to a team
+
+> app/User.php
+```php
+// Add
+protected static function boot(){
+    parent::boot();
+    static::creating(function($model){
+        $model->team_id = \DB::table('teams')->inRandomOrder()->first()->id;
+    });
+}
+```
+And then register a new user -> the user will have the team_id
+
+### 4.3 Eloquent observers
+
+If we want some way of writing our event logic so it's not so deeply tied into the boot function? Laravel provides a class called observers that for Eloquent models lets us do just that
+
+`php artisan make:observer UserObserver --model=User`
+
+>app/Observers/UserObserver.php
+
+```php
+// add
+public function creating(User $user)
+{
+    $user->team_id = \DB::table('teams')->inRandomOrder()->first->id;
+}
+```
+Tie observer into the model
+
+>app/User.php
+
+```php
+protected static function boot(){
+    parent::boot();
+    //static::creating(function($model){
+        //$model->team_id = \DB::table('teams')->inRandomOrder()->first()->id;
+    //});
+    User::observe('App\Observers\UserObserver');
+}
+```
+-> The same happen with the 4.2
+
+### 4.4 Custom accessors
+
+Custom accessors is a way in Eloquent for us to code up a property that we can access against our model without calling a direct function
+
+We'll see this in action with adding to our team model the ability to get the count of users associated with the team
+
+> app/Team.php
+
+```php
+//add
+public function getUsersCountAttribute()
+{
+    return \DB::table('users')->where('users.team_id', $this->id)->sum('users.id');
+}
+
+public $appends = ['users_count'];
+```
+Go to http://laravel.advanced/teams we'll see the user_count in the data
+
+```json
+{
+  "id": 1,
+  "title": "Christiansen-Boyer",
+  "created_at": "2020-06-18T17:55:11.000000Z",
+  "updated_at": "2020-06-18T17:55:11.000000Z",
+  "users_count": "24"
+},
+```
+### 4.5 Custom mutators
+
+ We can also define mutators when we want to override the way in which we want a value to be saved to our database. Imagine you need to ensure that a field is always uppercase or that it's formatted in some particular way before it's inserted into the database. 
+ 
+ We'll do this now with our team titles to ensure that the title of the team is always uppercase
+
+> app/Team.php
+
+```php
+//add
+public function setTitleAttribute($value)
+{
+    $this->attributes['title'] = ucwords($value);
+}
+```
+
+> app/Http/Requests/StoreTeam.php
+
+```php
+//edit
+public function authorize()
+{
+    //return ($this->user()->team_id == null);
+    return true;
+}
+```
+http://laravel.advanced/teams/create to test -> all the first character of the title will be uppercase
+
+### 4.6 Advanced wheres
+
+You may have noticed up to this point a thing we do when we get the points values for a team. Is that tickets are associated with an owner, but in this case, our owner never actually has to match the team we're checking against. Let's update our team's repository method to resolve this
+
+> app/Teams/Repository.php
+
+```php
+//edit
+public function points($team)
+{
+    $users = $team->where('teams.id', $team->id)
+        ->join('users', 'teams.id', '=', 'users.team_id')
+        ->select('users.id');
+
+    return $team->where('teams.id', $team->id)
+        ->join('tickets', 'teams.id', '=', 'tickets.team_id')
+        ->join('points', 'tickets.id', '=', 'points.ticket_id')
+        ->whereIn('points.owner_id', $users)
+        ->sum('points.value');
+}
+```
+
+Go to http://laravel.advanced/teams/2/points to check the points
+
+## 5. Collections
+
+
