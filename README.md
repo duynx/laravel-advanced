@@ -481,4 +481,33 @@ protected static function boot(){
 ```
 -> The same happen with the 4.2
 
+### 4.4 Custom accessors
+
+Custom accessors is a way in Eloquent for us to code up a property that we can access against our model without calling a direct function
+
+We'll see this in action with adding to our team model the ability to get the count of users associated with the team
+
+> app/Team.php
+
+```php
+//add
+public function getUsersCountAttribute()
+{
+    return \DB::table('users')->where('users.team_id', $this->id)->sum('users.id');
+}
+
+public $appends = ['users_count'];
+```
+Go to http://laravel.advanced/teams we'll see the user_count in the data
+
+```json
+{
+  "id": 1,
+  "title": "Christiansen-Boyer",
+  "created_at": "2020-06-18T17:55:11.000000Z",
+  "updated_at": "2020-06-18T17:55:11.000000Z",
+  "users_count": "24"
+},
+```
+### 4.5 Custom mutators
 
