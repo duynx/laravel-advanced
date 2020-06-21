@@ -1109,3 +1109,37 @@ protected $middleware = [
 ``` 
 
 ### 7.2 Route middleware
+
+`php artisan make:middleware LogTeam`
+
+>app/Http/Middleware/LogTeam.php
+
+```php
+public function handle($request, Closure $next)
+{
+    \Log::info($request->route('team')->id);
+    return $next($request);
+}
+```
+>routes/web.php
+```php
+Route::group(['namespace' => 'Web','middleware' => ['\App\Http\Middleware\LogTeam']],function (){
+    Route::resource('teams','TeamController');
+
+    Route::get('/teams/{team}/title',function (\App\Team $team){
+        return response()->jTitle($team);
+    });
+
+    Route::get('/teams/{team}/activate', function (){
+        return view('team/activate');
+    })->name('activateTeam')->middleware('signed');
+
+    Route::get('/teams/{team}/points', 'TeamController@points');
+});
+```
+
+All log in the file
+> storage/logs/laravel.log
+
+### 7.3 Terminate middleware
+

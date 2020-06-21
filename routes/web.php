@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::group(['namespace' => 'Web'],function (){
+Route::group(['namespace' => 'Web','middleware' => ['\App\Http\Middleware\LogTeam']],function (){
     Route::resource('teams','TeamController');
 
     Route::get('/teams/{team}/title',function (\App\Team $team){
