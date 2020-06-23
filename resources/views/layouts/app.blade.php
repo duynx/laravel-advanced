@@ -76,5 +76,15 @@
             @yield('content')
         </main>
     </div>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries
+    -->
+    <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.3/firebase-messaging.js"></script>
+
 </body>
 </html>
